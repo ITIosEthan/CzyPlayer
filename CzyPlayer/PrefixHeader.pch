@@ -1,0 +1,38 @@
+//
+//  PrefixHeader.pch
+//  CzyPlayer
+//
+//  Created by macOfEthan on 17/9/12.
+//  Copyright © 2017年 macOfEthan. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#define ONLINE @"http://bos.nj.bpc.baidu.com/tieba-smallvideo/11772_3c435014fb2dd9a5fd56a57cc369f6a0.mp4"
+
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#define CZY_FULL_WIDTH [UIScreen mainScreen].bounds.size.width
+#define CZY_FULL_HEIGHT [UIScreen mainScreen].bounds.size.height
+
+#define CZY_WEAK(obj) __weak typeof(obj) czyWeak##obj = obj
+
+#import "CzyAppDelegate.h"
+#import "CzyPlayerViewController.h"
+#import "CzyPlayingViewController.h"
+#import "CzyPlayView.h"
+#import "CzyPlayItems.h"
+#import "CzyTools.h"
+
+#import <ReactiveObjC/ReactiveObjC.h>
+#import <Masonry/Masonry.h>
+
+//滑块
+#import "HRHSVColorUtil.h"
+#import "HRBrightnessCursor.h"
+#import "HRBrightnessSlider.h"
+
+#endif /* PrefixHeader_pch */
