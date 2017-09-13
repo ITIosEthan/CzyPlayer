@@ -55,47 +55,54 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [self czyInitPlayerLayer];
+//    [self listeningRotating];
+    [self czyInitPlayerLayerWithFrame:CGRectMake(0, 0, CZY_FULL_WIDTH, 200)];
+
+}
+
+/**
+ *  监听设备旋转通知
+ */
+- (void)listeningRotating {
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onDeviceOrientationChange)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+}
+
+- (void)onDeviceOrientationChange
+{
+    [self.playView removeFromSuperview];
+    self.playView = nil;
     
-    [self observerPlayer];
-}
-
-#pragma mark - czyInitPlayerLayer
-- (void)czyInitPlayerLayer
-{
-    self.playView = [[CzyPlayView alloc] czyInitPlayerLayerWithPlayerItem:self.playItems.firstObject andFrame:CGRectMake(0, 0, CZY_FULL_WIDTH, 300)];
-    [self.view addSubview:self.playView];
-}
-
-#pragma mark - observerPlayer
-- (void)observerPlayer
-{
-    [self.playView.playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
-    [self.playView.playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
-}
-
-#pragma mark - observeValueForKeyPath
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
-{
-    AVPlayerItem *playerItem = (AVPlayerItem *)object;
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
     
-    if ([keyPath isEqualToString:@"status"]) {
+    if (orientation == UIInterfaceOrientationPortrait) {
         
-        if (playerItem.status == AVPlayerItemStatusReadyToPlay) {
-            
-            [self.playView.player play];
-        }
-    }else if ([keyPath isEqualToString:@"loadedTimeRanges"]){
+        [self czyInitPlayerLayerWithFrame:CGRectMake(0, 0, CZY_FULL_WIDTH, 300)];
+    }else{
         
-        
+        [self czyInitPlayerLayerWithFrame:CGRectMake(0, 0, CZY_FULL_HEIGHT, CZY_FULL_WIDTH)];
     }
 }
 
-#pragma mark - dealloc
+#pragma mark - czyInitPlayerLayer
+- (void)czyInitPlayerLayerWithFrame:(CGRect)frame
+{
+    self.playView = [[CzyPlayView alloc] czyInitPlayerLayerWithPlayerItem:self.playItems.firstObject andFrame:frame];
+    [self.view addSubview:self.playView];
+
+}
+
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
 - (void)dealloc
 {
-    [self.playView.playerItem removeObserver:self forKeyPath:@"status"];
-    [self.playView.playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 }
 
 #pragma mark - StatusBar
@@ -106,7 +113,7 @@
 
 - (BOOL)prefersStatusBarHidden
 {
-    return YES;
+    return NO;
 }
 
 @end

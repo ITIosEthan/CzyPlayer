@@ -20,6 +20,9 @@
 
 #define CZY_WEAK(obj) __weak typeof(obj) czyWeak##obj = obj
 
+#define CZY_NOTIFICATION_CENTER [NSNotificationCenter defaultCenter]
+
+
 #import "CzyAppDelegate.h"
 #import "CzyPlayerViewController.h"
 #import "CzyPlayingViewController.h"

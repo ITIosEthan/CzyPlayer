@@ -160,7 +160,28 @@
 }
 
 - (void)updateCursor {
-    CGFloat brightnessCursorX = (1.0f - (self.brightness.floatValue - self.brightnessLowerLimit.floatValue) / (1.0f - self.brightnessLowerLimit.floatValue));
+    
+    CGFloat brightnessCursorX = 0;
+
+    CGPoint point = CGPointMake(brightnessCursorX * _controlFrame.size.width + _controlFrame.origin.x, _brightnessCursor.center.y);
+    _brightnessCursor.center = point;
+    _brightnessCursor.color = self.color;
+}
+
+- (void)updateCursorToProgress:(CGFloat)progress
+{
+    CGFloat brightnessCursorX = 1-(1.0f - (progress - self.brightnessLowerLimit.floatValue) / (1.0f - self.brightnessLowerLimit.floatValue));
+    if (brightnessCursorX < 0) {
+        return;
+    }
+    CGPoint point = CGPointMake(brightnessCursorX * _controlFrame.size.width + _controlFrame.origin.x, _brightnessCursor.center.y);
+    _brightnessCursor.center = point;
+    _brightnessCursor.color = self.color;
+}
+
+- (void)updateCursor:(CGFloat)progress
+{
+    CGFloat brightnessCursorX = 1 - (1.0f - (progress - self.brightnessLowerLimit.floatValue) / (1.0f - self.brightnessLowerLimit.floatValue));
     if (brightnessCursorX < 0) {
         return;
     }

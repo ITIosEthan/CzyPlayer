@@ -19,5 +19,9 @@ typedef void(^SliderGes)(CGFloat progress);
 
 @property (nonatomic, copy) SliderGes slideGes;
 
+/**更新新进度进度*/
+- (void)updateCursorToProgress:(CGFloat)progress;
+/**更新光标*/
+- (void)updateCursor:(CGFloat)progress;
 
 @end
