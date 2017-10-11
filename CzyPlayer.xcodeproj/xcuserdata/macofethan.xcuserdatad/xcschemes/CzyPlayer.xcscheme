@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "066ED1FD1F678A9300DE3BD2"
+               BlueprintIdentifier = "065E64D91F8C5EAB009F9799"
                BuildableName = "CzyPlayer.app"
                BlueprintName = "CzyPlayer"
                ReferencedContainer = "container:CzyPlayer.xcodeproj">
@@ -32,7 +32,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "066ED1FD1F678A9300DE3BD2"
+            BlueprintIdentifier = "065E64D91F8C5EAB009F9799"
             BuildableName = "CzyPlayer.app"
             BlueprintName = "CzyPlayer"
             ReferencedContainer = "container:CzyPlayer.xcodeproj">
@@ -55,7 +55,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "066ED1FD1F678A9300DE3BD2"
+            BlueprintIdentifier = "065E64D91F8C5EAB009F9799"
             BuildableName = "CzyPlayer.app"
             BlueprintName = "CzyPlayer"
             ReferencedContainer = "container:CzyPlayer.xcodeproj">
@@ -74,7 +74,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "066ED1FD1F678A9300DE3BD2"
+            BlueprintIdentifier = "065E64D91F8C5EAB009F9799"
             BuildableName = "CzyPlayer.app"
             BlueprintName = "CzyPlayer"
             ReferencedContainer = "container:CzyPlayer.xcodeproj">
