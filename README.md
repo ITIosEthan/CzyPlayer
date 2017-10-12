@@ -16,5 +16,5 @@
     [self.view addSubview:playView];
 ```
 
-#### 效果图
+#### Example
 ![效果图](https://github.com/ITIosEthan/CzyPlayer/blob/master/czyplayer.gif)
