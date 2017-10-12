@@ -284,7 +284,7 @@
     [player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(0.1, NSEC_PER_SEC) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
         
         self.currentDuration = CMTimeGetSeconds(time);
-        self.totalDuration = CMTimeGetSeconds([self.playerItem duration]);
+        self.totalDuration = CMTimeGetSeconds([self.player.currentItem duration]);
         
         self.currentTimeLabel.text = [self getTimeWithSecond:self.currentDuration];
         
@@ -332,7 +332,7 @@
         [self activityViewStartRunning];
         
         CGFloat loadedTime = [self availableDuration];
-        CGFloat totalTime = CMTimeGetSeconds(self.playerItem.duration);
+        CGFloat totalTime = CMTimeGetSeconds(self.player.currentItem.duration);
         self.progressCacheView.progress = loadedTime/totalTime;
 
         if (self.progressCacheView.progress >= 1) {
@@ -693,6 +693,7 @@
     [self.player replaceCurrentItemWithPlayerItem:newPlayItem];
     
     [self observeLoadingProgressAndStatusWithPlayerItem:newPlayItem];
+    [self observePlayProgressWithPlayer:self.player];
     
     [self play];
 }
