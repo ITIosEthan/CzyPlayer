@@ -33,6 +33,10 @@
     
     playView.playUrl = @"http://flv3.bn.netease.com/videolib3/1710/11/YcDjZ7703/HD/YcDjZ7703-mobile.mp4";
     
+    playView.cacheProgressColor = [UIColor redColor];
+    playView.loadedProgreeViewColor = [UIColor greenColor];
+    playView.loadedProgreeViewColors = @[[UIColor lightGrayColor],[UIColor blueColor], [UIColor greenColor]];
+    
     [self.view addSubview:playView];
 }
 

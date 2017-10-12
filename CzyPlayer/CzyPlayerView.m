@@ -19,7 +19,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "ASValueTrackingSlider.h"
 
-@interface CzyPlayerView ()
+@interface CzyPlayerView ()<ASValueTrackingSliderDataSource>
 
 /**唯一窗口*/
 @property (nonatomic, strong) UIWindow *keyWindow;
@@ -33,6 +33,8 @@
 @property (nonatomic, strong) UIButton *playPauseBtn;
 @property (nonatomic, strong) UIView *topPlayerView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic, strong) UIProgressView *progressCacheView;
+
 
 /**播放器*/
 @property (nonatomic, strong) AVPlayerItem *playerItem;
@@ -60,9 +62,39 @@
     [self.activityIndicatorView startAnimating];
     
     [self addSubview:self.bottomPlayerView];
+    
+    [self insertSubview:self.activityIndicatorView aboveSubview:self.playPauseBtn];
 }
 
-#pragma mark - 懒加载
+- (void)setCacheProgressColor:(UIColor *)cacheProgressColor
+{
+    _cacheProgressColor = cacheProgressColor;
+    
+    self.progressCacheView.tintColor = _cacheProgressColor;
+}
+
+- (void)setTapTimePopViewColor:(UIColor *)tapTimePopViewColor
+{
+    _tapTimePopViewColor = tapTimePopViewColor;
+    
+    self.slider.textColor = _tapTimePopViewColor;
+}
+
+- (void)setLoadedProgreeViewColor:(UIColor *)loadedProgreeViewColor
+{
+    _loadedProgreeViewColor = loadedProgreeViewColor;
+    
+    self.slider.popUpViewColor = _loadedProgreeViewColor;
+}
+
+- (void)setLoadedProgreeViewColors:(NSArray *)loadedProgreeViewColors
+{
+    _loadedProgreeViewColors = loadedProgreeViewColors;
+    
+    self.slider.popUpViewAnimatedColors = _loadedProgreeViewColors;
+}
+
+#pragma mark - playerItem player playerLayer
 - (AVPlayerLayer *)playerLayer
 {
     if (!_playerLayer) {
@@ -99,67 +131,13 @@
     return _player;
 }
 
-
-#pragma mark - 根据本地或者网络url选择playItem
-- (AVPlayerItem *)getPlayItem
-{
-    if ([self.playUrl rangeOfString:@"http"].location == NSNotFound) {
-        
-        //本地
-        AVAsset *localAsset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:self.playUrl] options:nil];
-        return [AVPlayerItem playerItemWithAsset:localAsset];
-    }else{
-    
-        return [AVPlayerItem playerItemWithURL:[NSURL URLWithString:[self.playUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-    }
-}
-
-#pragma mark - 播放进度
-- (void)observePlayProgressWithPlayer:(AVPlayer *)player
-{
-    [player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(0.1, NSEC_PER_SEC) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
-        
-        self.currentDuration = CMTimeGetSeconds(time);
-        self.totalDuration = CMTimeGetSeconds([self.playerItem duration]);
-        
-//        NSLog(@"%f %f", self.currentDuration, self.totalDuration);
-    }];
-}
-
-#pragma mark - 播放状态与进度
-- (void)observeLoadingProgressAndStatusWithPlayerItem:(AVPlayerItem *)playerItem
-{
-    [playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
-    [playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
-}
-
-#pragma mark - 观察回调
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
-{
-    AVPlayerItem *playItem = object;
-    
-    if ([keyPath isEqualToString:@"status"]) {
-        
-        AVPlayerStatus status = [[change valueForKey:@"new"] integerValue];
-        
-        if (status == AVPlayerStatusReadyToPlay) {
-            
-            self.totalDuration = CMTimeGetSeconds(playItem.duration);
-            self.totalTimeLabel.text = [NSString stringWithFormat:@"%f", self.totalDuration];
-        }
-        
-    }else if ([keyPath isEqualToString:@"loadedTimeRanges"]){
-
-    }
-}
-
 #pragma mark - 缓冲加载视图
 - (UIActivityIndicatorView *)activityIndicatorView
 {
     if (!_activityIndicatorView) {
         
         UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        [self insertSubview:activityIndicatorView belowSubview:self.keyWindow];
+        activityIndicatorView.transform = CGAffineTransformMakeScale(1.5, 1.5);
         
         self.activityIndicatorView = activityIndicatorView;
     }
@@ -169,6 +147,7 @@
 #pragma mark - 播放暂停按钮
 - (UIButton *)playPauseBtn
 {
+    
     if (!_playPauseBtn) {
         
         UIButton *playPauseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -194,7 +173,7 @@
         
         UILabel *label1 = [[UILabel alloc] init];
         /**
-         除了AutoLayout，AutoresizingMask也是一种布局方式。默认情况下，translatesAutoresizingMaskIntoConstraints ＝ true , 
+         除了AutoLayout，AutoresizingMask也是一种布局方式。默认情况下，translatesAutoresizingMaskIntoConstraints ＝ true ,
          此时视图的AutoresizingMask会被转换成对应效果的约束。这样很可能就会和我们手动添加的其它约束有冲突。此属性设置成false时，AutoresizingMask就不会变成约束。也就是说 当前 视图的 AutoresizingMask失效了。
          */
         label1.translatesAutoresizingMaskIntoConstraints = NO;
@@ -242,13 +221,25 @@
         [bottomView addConstraints:@[label2Right, label2W, label2Top, label2Bottom]];
         
         ASValueTrackingSlider *slider = [[ASValueTrackingSlider alloc] init];
+        slider.dataSource = self;
         slider.translatesAutoresizingMaskIntoConstraints = NO;
         slider.value = 0;
         slider.userInteractionEnabled = YES;
+        slider.maximumTrackTintColor = [UIColor clearColor];
+        slider.font = [UIFont systemFontOfSize:14];
+        slider.popUpViewArrowLength = 6;
+        slider.popUpViewCornerRadius = 2;
+        slider.popUpViewHeightPaddingFactor = 0.6;
+        slider.popUpViewAnimatedColors = @[[UIColor clearColor]];
+        [slider setThumbImage:[UIImage imageNamed:@"CZYPlayer_slider"] forState:UIControlStateNormal];
         [bottomView addSubview:slider];
         
+        /**点击进度条*/
         UITapGestureRecognizer *sliderTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sliderTap:)];
         [slider addGestureRecognizer:sliderTap];
+        
+        /**拖动进度条*/
+        [slider addTarget:self action:@selector(sliderPan:) forControlEvents:UIControlEventValueChanged];
         
         self.slider = slider;
         
@@ -258,9 +249,102 @@
         NSLayoutConstraint *sliderRight = [NSLayoutConstraint constraintWithItem:slider attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:label2 attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0];
         [bottomView addConstraints:@[sliderTop, sliderBottom, sliderLeft, sliderRight]];
         
+        UIProgressView *progressCacheView = [UIProgressView new];
+        progressCacheView.tintColor = [UIColor lightGrayColor];
+        progressCacheView.translatesAutoresizingMaskIntoConstraints = NO;
+        [bottomView addSubview:progressCacheView];
+        self.progressCacheView = progressCacheView;
+        
+        NSLayoutConstraint *progressCacheViewLeft = [NSLayoutConstraint constraintWithItem:progressCacheView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:slider attribute:NSLayoutAttributeLeft multiplier:1.0 constant:5];
+        NSLayoutConstraint *progressCacheViewCenterY = [NSLayoutConstraint constraintWithItem:progressCacheView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:slider attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:1];
+        NSLayoutConstraint *progressCacheViewHeight = [NSLayoutConstraint constraintWithItem:progressCacheView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:1.0 constant:2];
+        NSLayoutConstraint *progressCacheViewRight = [NSLayoutConstraint constraintWithItem:progressCacheView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:slider attribute:NSLayoutAttributeRight multiplier:1.0 constant:0];
+        [bottomView addConstraints:@[progressCacheViewCenterY, progressCacheViewHeight, progressCacheViewLeft, progressCacheViewRight]];
+        
+        [bottomView bringSubviewToFront:slider];
+        
         [self updateConstraintsIfNeeded];
     }
     return _bottomPlayerView;
+}
+
+#pragma mark - 根据本地或者网络url选择playItem
+- (AVPlayerItem *)getPlayItem
+{
+    if ([self.playUrl rangeOfString:@"http"].location == NSNotFound) {
+        
+        //本地
+        AVAsset *localAsset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:self.playUrl] options:nil];
+        return [AVPlayerItem playerItemWithAsset:localAsset];
+    }else{
+    
+        return [AVPlayerItem playerItemWithURL:[NSURL URLWithString:[self.playUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    }
+}
+
+#pragma mark - 播放进度
+- (void)observePlayProgressWithPlayer:(AVPlayer *)player
+{
+    [player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(0.1, NSEC_PER_SEC) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
+        
+        self.currentDuration = CMTimeGetSeconds(time);
+        self.totalDuration = CMTimeGetSeconds([self.playerItem duration]);
+        
+        self.currentTimeLabel.text = [self getTimeWithSecond:self.currentDuration];
+        
+        /**播放时改变进度条*/
+        [self.slider setValue:self.currentDuration / self.totalDuration animated:NO];
+        
+        /**播放进度大于缓冲进度时*/
+        if (self.slider.value >= self.progressCacheView.progress-0.1) {
+            
+            [self activityViewStartRunning];
+        }else{
+            
+            [self activityViewStopRunning];
+        }
+    }];
+}
+
+#pragma mark - 播放状态与进度
+- (void)observeLoadingProgressAndStatusWithPlayerItem:(AVPlayerItem *)playerItem
+{
+    [playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+    [playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
+}
+
+#pragma mark - 观察回调
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
+    AVPlayerItem *playItem = object;
+    
+    if ([keyPath isEqualToString:@"status"]) {
+        
+        AVPlayerStatus status = [[change valueForKey:@"new"] integerValue];
+        
+        if (status == AVPlayerStatusReadyToPlay) {
+            
+            self.totalDuration = CMTimeGetSeconds(playItem.duration);
+            self.totalTimeLabel.text = [self getTimeWithSecond:self.totalDuration];
+            
+        }
+        
+    }else if ([keyPath isEqualToString:@"loadedTimeRanges"]){
+
+        [self activityViewStartRunning];
+        
+        CGFloat loadedTime = [self availableDuration];
+        CGFloat totalTime = CMTimeGetSeconds(self.playerItem.duration);
+        self.progressCacheView.progress = loadedTime/totalTime;
+
+        if (self.progressCacheView.progress >= 1) {
+            
+            [self activityViewStopRunning];
+        }
+        
+        /**缓冲完成移除*/
+        //[self removeCacheProgressView];
+    }
 }
 
 #pragma mark - 手动切换横竖屏
@@ -365,6 +449,10 @@
 #pragma mark - 播放与暂停的相互切换
 - (void)playOrPause:(UIButton *)sender
 {
+    if (self.player.status != AVPlayerStatusReadyToPlay) {
+        return;
+    }
+    
     sender.selected = !sender.selected;
 
     if (!sender.selected) {
@@ -397,7 +485,14 @@
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
         
+        /**单击手势*/
         [self showOrHiddenSubViews];
+        
+        /**双击手势*/
+        [self doubleTapToExchangeFullScreen];
+        
+        /**默认隐藏子视图*/
+        [self hiddenSubViews];
     }
     return self;
 }
@@ -411,15 +506,38 @@
     if (!self.isOriginalFrame) {
         self.originalFrame = self.frame;
         self.bottomPlayerView.frame = CGRectMake(0, self.originalFrame.size.height-BOTTOM_HTIGHT, self.originalFrame.size.width, BOTTOM_HTIGHT);
-        self.activityIndicatorView.center = CGPointMake(self.originalFrame.size.width/2, self.originalFrame.size.height/2);
         self.playPauseBtn.frame = CGRectMake((self.originalFrame.size.width-BOTTOM_HTIGHT)/2, (self.originalFrame.size.height-BOTTOM_HTIGHT)/2, BOTTOM_HTIGHT, BOTTOM_HTIGHT);
+        self.activityIndicatorView.center = CGPointMake(self.originalFrame.size.width/2, self.originalFrame.size.height/2);
         self.isOriginalFrame = YES;
+
+        [self bringSubviewToFront:self.bottomPlayerView];
+        [self bringSubviewToFront:self.playPauseBtn];
+        [self insertSubview:self.activityIndicatorView aboveSubview:self.playPauseBtn];
+        self.activityIndicatorView.tintColor = [UIColor brownColor];
     }
-    
-    [self bringSubviewToFront:self.bottomPlayerView];
 }
 
-#pragma mark - 点击影藏显示切换
+#pragma mark - 双击全屏切换
+- (void)doubleTapToExchangeFullScreen
+{
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTapToExchangeFullScreen:)];
+    doubleTap.numberOfTapsRequired = 2;
+    [self addGestureRecognizer:doubleTap];
+}
+
+- (void)doubleTapToExchangeFullScreen:(UITapGestureRecognizer *)tap
+{
+    self.fullScreenBtn.selected = !self.fullScreenBtn.selected;
+    
+    if (self.fullScreenBtn.selected) {
+        
+        [self rightOritationFullScreen];
+    }else{
+        [self normalScreen];
+    }
+}
+
+#pragma mark - 单击影藏显示切换
 - (void)showOrHiddenSubViews
 {
     UITapGestureRecognizer *showAndHiddenSubViewsTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showAndHiddenSubViewsTap:)];
@@ -463,11 +581,21 @@
         self.playPauseBtn.hidden = NO;
         self.bottomPlayerView.hidden = NO;
     }];
+    
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        
+//        [self hiddenSubViews];
+//    });
 }
 
 #pragma mark - 进度条点击事件
 - (void)sliderTap:(UITapGestureRecognizer *)tap
 {
+    if (self.player.status != AVPlayerStatusReadyToPlay) {
+        return;
+    }
+    
+
     ASValueTrackingSlider *slider = (ASValueTrackingSlider *)tap.view;
     
     CGPoint touchPoint = [tap locationInView:slider];
@@ -475,8 +603,99 @@
     CGFloat value = (slider.maximumValue - slider.minimumValue) * (touchPoint.x / slider.frame.size.width );
 
     [slider setValue:value animated:NO];
+    
+    CMTime currentTime = CMTimeMake(value * self.totalDuration, 1.0);
+    
+    [self.player seekToTime:currentTime completionHandler:^(BOOL finished) {
+        
+        [self.player play];
+        self.playPauseBtn.selected = YES;
+        [self activityViewStopRunning];
+        self.currentTimeLabel.text = [self getTimeWithSecond:CMTimeGetSeconds(currentTime)];
+    }];
 }
 
+#pragma mark - 进度条拖动手势
+- (void)sliderPan:(ASValueTrackingSlider *)slider
+{
+    if (self.player.status != AVPlayerStatusReadyToPlay) {
+        return;
+    }
+        
+    [self.player seekToTime:CMTimeMake(slider.value * self.totalDuration, 1.0) completionHandler:^(BOOL finished) {
+        
+        [self.player play];
+        self.playPauseBtn.selected = YES;
+        
+        [self activityViewStopRunning];
+    }];
+}
+
+#pragma mark - 秒钟转时分秒
+- (NSString *)getTimeWithSecond:(int)totalSeconds
+{
+    int seconds = totalSeconds % 60;
+    int minutes = (totalSeconds / 60) % 60;
+    int hours = totalSeconds / 3600;
+    return [NSString stringWithFormat:@"%02d:%02d:%02d", hours, minutes, seconds];
+}
+
+#pragma mark - 计算缓冲进度
+- (NSTimeInterval)availableDuration {
+    NSArray *loadedTimeRanges = [[self.player currentItem] loadedTimeRanges];
+    CMTimeRange timeRange = [loadedTimeRanges.firstObject CMTimeRangeValue];
+    float startSeconds = CMTimeGetSeconds(timeRange.start);
+    float durationSeconds = CMTimeGetSeconds(timeRange.duration);
+    NSTimeInterval result = startSeconds + durationSeconds;
+    return result;
+}
+
+#pragma mark - 开始暂停加载视图
+- (void)activityViewStartRunning
+{
+    [self.activityIndicatorView startAnimating];
+}
+
+- (void)activityViewStopRunning
+{
+    [self.activityIndicatorView stopAnimating];
+    [self.activityIndicatorView removeFromSuperview];
+}
+
+#pragma mark - 移除缓冲进度条
+- (void)removeCacheProgressView
+{
+    if (self.progressCacheView == nil) {
+        return;
+    }
+    
+    if (self.progressCacheView.progress == 1) {
+        [self.progressCacheView removeFromSuperview];
+        self.progressCacheView = nil;
+    }
+}
+
+#pragma mark - <ASValueTrackingSliderDelegate, ASValueTrackingSliderDataSource>
+- (NSString *)slider:(ASValueTrackingSlider *)slider stringForValue:(float)value
+{
+    return [self getTimeWithSecond:slider.value * self.totalDuration];
+}
+
+#pragma mark - dealloc
+- (void)dealloc
+{
+    [self.playerItem removeObserver:self forKeyPath:@"status"];
+    [self.playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+    
+    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+    
+    self.player = nil;
+    self.playerItem = nil;
+    self.playerLayer = nil;
+    self.bottomPlayerView = nil;
+    self.playPauseBtn = nil;
+    self.activityIndicatorView = nil;
+}
 
 @end
 
