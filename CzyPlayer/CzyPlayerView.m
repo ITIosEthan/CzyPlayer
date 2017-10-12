@@ -60,10 +60,6 @@
     _playUrl = playUrl;
     
     [self.activityIndicatorView startAnimating];
-    
-    [self addSubview:self.bottomPlayerView];
-    
-    [self insertSubview:self.activityIndicatorView aboveSubview:self.playPauseBtn];
 }
 
 - (void)setCacheProgressColor:(UIColor *)cacheProgressColor
@@ -111,7 +107,7 @@
 {
     if (!_player) {
         
-        AVPlayerItem *playerItem = [self getPlayItem];
+        AVPlayerItem *playerItem = [self getPlayItemWithUrl:self.playUrl];
         self.playerItem = playerItem;
         
         AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
@@ -269,16 +265,16 @@
 }
 
 #pragma mark - 根据本地或者网络url选择playItem
-- (AVPlayerItem *)getPlayItem
+- (AVPlayerItem *)getPlayItemWithUrl:(NSString *)url
 {
     if ([self.playUrl rangeOfString:@"http"].location == NSNotFound) {
         
         //本地
-        AVAsset *localAsset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:self.playUrl] options:nil];
+        AVAsset *localAsset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:url] options:nil];
         return [AVPlayerItem playerItemWithAsset:localAsset];
     }else{
     
-        return [AVPlayerItem playerItemWithURL:[NSURL URLWithString:[self.playUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+        return [AVPlayerItem playerItemWithURL:[NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     }
 }
 
@@ -327,6 +323,8 @@
             self.totalDuration = CMTimeGetSeconds(playItem.duration);
             self.totalTimeLabel.text = [self getTimeWithSecond:self.totalDuration];
             
+            [self play];
+            self.playPauseBtn.selected = YES;
         }
         
     }else if ([keyPath isEqualToString:@"loadedTimeRanges"]){
@@ -428,6 +426,10 @@
 #pragma mark - 取消全屏播放
 - (void)normalScreen
 {
+    [self removeFromSuperview];
+    
+    [self.playSuperView addSubview:self];
+    
     self.fullScreenBtn.selected = NO;
     
     [[UIDevice currentDevice] setValue:[NSNumber numberWithInt:UIDeviceOrientationPortrait] forKey:@"orientation"];
@@ -493,6 +495,8 @@
         
         /**默认隐藏子视图*/
         [self hiddenSubViews];
+        
+        
     }
     return self;
 }
@@ -502,7 +506,7 @@
 {
     self.playerLayer.frame = self.bounds;
     
-    /**保证是最起始的frame*/
+    /**多次调用 保证一次性操作 保证是最起始的frame*/
     if (!self.isOriginalFrame) {
         self.originalFrame = self.frame;
         self.bottomPlayerView.frame = CGRectMake(0, self.originalFrame.size.height-BOTTOM_HTIGHT, self.originalFrame.size.width, BOTTOM_HTIGHT);
@@ -510,6 +514,7 @@
         self.activityIndicatorView.center = CGPointMake(self.originalFrame.size.width/2, self.originalFrame.size.height/2);
         self.isOriginalFrame = YES;
 
+        [self addSubview:self.bottomPlayerView];
         [self bringSubviewToFront:self.bottomPlayerView];
         [self bringSubviewToFront:self.playPauseBtn];
         [self insertSubview:self.activityIndicatorView aboveSubview:self.playPauseBtn];
@@ -673,6 +678,38 @@
         [self.progressCacheView removeFromSuperview];
         self.progressCacheView = nil;
     }
+}
+
+#pragma mark - 切换新的播放地址
+- (void)replaceCurrentPlayItemWithUrl:(NSString *)newUrl
+{
+    [self.player.currentItem removeObserver:self forKeyPath:@"status"];
+    [self.player.currentItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+    
+    [self hiddenSubViews];
+
+    AVPlayerItem *newPlayItem = [self getPlayItemWithUrl:newUrl];
+    
+    [self.player replaceCurrentItemWithPlayerItem:newPlayItem];
+    
+    [self observeLoadingProgressAndStatusWithPlayerItem:newPlayItem];
+    
+    [self play];
+}
+
+#pragma mark - 开始播放
+- (void)play
+{
+    if (self.player.status == AVPlayerStatusReadyToPlay) {
+        
+        [self.player play];
+    }
+}
+
+#pragma mark - 暂停播放
+- (void)pause
+{
+    [self.player pause];
 }
 
 #pragma mark - <ASValueTrackingSliderDelegate, ASValueTrackingSliderDataSource>

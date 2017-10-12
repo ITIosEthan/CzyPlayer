@@ -15,7 +15,7 @@
 
 
 #import "CzyAppDelegate.h"
-#import "CzyRootViewController.h"
+#import "RootViewController.h"
 
 @implementation CzyAppDelegate
 
@@ -25,7 +25,7 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[CzyRootViewController new]];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[RootViewController new]];
     
     return YES;
 }

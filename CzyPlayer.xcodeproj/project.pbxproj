@@ -10,11 +10,14 @@
 		065E64DF1F8C5EAB009F9799 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 065E64DE1F8C5EAB009F9799 /* main.m */; };
 		065E64EA1F8C5EAB009F9799 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 065E64E91F8C5EAB009F9799 /* Assets.xcassets */; };
 		065E64ED1F8C5EAB009F9799 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 065E64EB1F8C5EAB009F9799 /* LaunchScreen.storyboard */; };
-		065E64F61F8C5F58009F9799 /* CzyRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 065E64F51F8C5F58009F9799 /* CzyRootViewController.m */; };
 		065E64F91F8C5F67009F9799 /* CzyAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 065E64F81F8C5F67009F9799 /* CzyAppDelegate.m */; };
 		065E64FF1F8C6080009F9799 /* CzyPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 065E64FE1F8C6080009F9799 /* CzyPlayerView.m */; };
+		06A1CDF51F8F51BB00F74AF7 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A1CDF41F8F51BB00F74AF7 /* RootViewController.m */; };
+		06A1CDF81F8F51FE00F74AF7 /* NormalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A1CDF71F8F51FE00F74AF7 /* NormalViewController.m */; };
+		06A1CDFB1F8F520800F74AF7 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A1CDFA1F8F520800F74AF7 /* TableViewController.m */; };
 		06CE6F061F8E197B003B13E4 /* ASValuePopUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CE6F031F8E197B003B13E4 /* ASValuePopUpView.m */; };
 		06CE6F071F8E197B003B13E4 /* ASValueTrackingSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CE6F051F8E197B003B13E4 /* ASValueTrackingSlider.m */; };
+		8A49B617F9734378F559BFC2 /* libPods-CzyPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A7523396E084A65882BB9A93 /* libPods-CzyPlayer.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,17 +26,24 @@
 		065E64E91F8C5EAB009F9799 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		065E64EC1F8C5EAB009F9799 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		065E64EE1F8C5EAB009F9799 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		065E64F41F8C5F58009F9799 /* CzyRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CzyRootViewController.h; sourceTree = "<group>"; };
-		065E64F51F8C5F58009F9799 /* CzyRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CzyRootViewController.m; sourceTree = "<group>"; };
 		065E64F71F8C5F67009F9799 /* CzyAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CzyAppDelegate.h; sourceTree = "<group>"; };
 		065E64F81F8C5F67009F9799 /* CzyAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CzyAppDelegate.m; sourceTree = "<group>"; };
 		065E64FD1F8C6080009F9799 /* CzyPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CzyPlayerView.h; sourceTree = "<group>"; };
 		065E64FE1F8C6080009F9799 /* CzyPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CzyPlayerView.m; sourceTree = "<group>"; };
 		065E65001F8C6667009F9799 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		06A1CDF31F8F51BB00F74AF7 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		06A1CDF41F8F51BB00F74AF7 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
+		06A1CDF61F8F51FE00F74AF7 /* NormalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NormalViewController.h; sourceTree = "<group>"; };
+		06A1CDF71F8F51FE00F74AF7 /* NormalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NormalViewController.m; sourceTree = "<group>"; };
+		06A1CDF91F8F520800F74AF7 /* TableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewController.h; sourceTree = "<group>"; };
+		06A1CDFA1F8F520800F74AF7 /* TableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewController.m; sourceTree = "<group>"; };
 		06CE6F021F8E197B003B13E4 /* ASValuePopUpView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASValuePopUpView.h; sourceTree = "<group>"; };
 		06CE6F031F8E197B003B13E4 /* ASValuePopUpView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASValuePopUpView.m; sourceTree = "<group>"; };
 		06CE6F041F8E197B003B13E4 /* ASValueTrackingSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASValueTrackingSlider.h; sourceTree = "<group>"; };
 		06CE6F051F8E197B003B13E4 /* ASValueTrackingSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASValueTrackingSlider.m; sourceTree = "<group>"; };
+		5A71C1948FBB03BF63966C6C /* Pods-CzyPlayer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CzyPlayer.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CzyPlayer/Pods-CzyPlayer.debug.xcconfig"; sourceTree = "<group>"; };
+		828AAADE43B868458C356B74 /* Pods-CzyPlayer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CzyPlayer.release.xcconfig"; path = "Pods/Target Support Files/Pods-CzyPlayer/Pods-CzyPlayer.release.xcconfig"; sourceTree = "<group>"; };
+		A7523396E084A65882BB9A93 /* libPods-CzyPlayer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CzyPlayer.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A49B617F9734378F559BFC2 /* libPods-CzyPlayer.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,6 +63,8 @@
 			children = (
 				065E64DC1F8C5EAB009F9799 /* CzyPlayer */,
 				065E64DB1F8C5EAB009F9799 /* Products */,
+				624CAA98C54ED61E074FAEBE /* Pods */,
+				E674C0331CB9C52FA8A99599 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -68,8 +81,12 @@
 			children = (
 				065E64F71F8C5F67009F9799 /* CzyAppDelegate.h */,
 				065E64F81F8C5F67009F9799 /* CzyAppDelegate.m */,
-				065E64F41F8C5F58009F9799 /* CzyRootViewController.h */,
-				065E64F51F8C5F58009F9799 /* CzyRootViewController.m */,
+				06A1CDF31F8F51BB00F74AF7 /* RootViewController.h */,
+				06A1CDF41F8F51BB00F74AF7 /* RootViewController.m */,
+				06A1CDF61F8F51FE00F74AF7 /* NormalViewController.h */,
+				06A1CDF71F8F51FE00F74AF7 /* NormalViewController.m */,
+				06A1CDF91F8F520800F74AF7 /* TableViewController.h */,
+				06A1CDFA1F8F520800F74AF7 /* TableViewController.m */,
 				065E64FD1F8C6080009F9799 /* CzyPlayerView.h */,
 				065E64FE1F8C6080009F9799 /* CzyPlayerView.m */,
 				06CE6F011F8E197B003B13E4 /* ASValueTrackingSlider */,
@@ -101,6 +118,23 @@
 			path = ASValueTrackingSlider;
 			sourceTree = "<group>";
 		};
+		624CAA98C54ED61E074FAEBE /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				5A71C1948FBB03BF63966C6C /* Pods-CzyPlayer.debug.xcconfig */,
+				828AAADE43B868458C356B74 /* Pods-CzyPlayer.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		E674C0331CB9C52FA8A99599 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A7523396E084A65882BB9A93 /* libPods-CzyPlayer.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -108,9 +142,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 065E64F11F8C5EAB009F9799 /* Build configuration list for PBXNativeTarget "CzyPlayer" */;
 			buildPhases = (
+				F0C103256C6D691DDC2F2B00 /* [CP] Check Pods Manifest.lock */,
 				065E64D61F8C5EAB009F9799 /* Sources */,
 				065E64D71F8C5EAB009F9799 /* Frameworks */,
 				065E64D81F8C5EAB009F9799 /* Resources */,
+				C201438BF1C7B8441B94A9B8 /* [CP] Embed Pods Frameworks */,
+				93F163399EA6FC73CA80594A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -134,6 +171,11 @@
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = TGQ3T5S6T9;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -167,14 +209,64 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		93F163399EA6FC73CA80594A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CzyPlayer/Pods-CzyPlayer-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C201438BF1C7B8441B94A9B8 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CzyPlayer/Pods-CzyPlayer-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F0C103256C6D691DDC2F2B00 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run \'pod install\' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		065E64D61F8C5EAB009F9799 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				065E64FF1F8C6080009F9799 /* CzyPlayerView.m in Sources */,
+				06A1CDF81F8F51FE00F74AF7 /* NormalViewController.m in Sources */,
+				06A1CDF51F8F51BB00F74AF7 /* RootViewController.m in Sources */,
 				06CE6F061F8E197B003B13E4 /* ASValuePopUpView.m in Sources */,
-				065E64F61F8C5F58009F9799 /* CzyRootViewController.m in Sources */,
+				06A1CDFB1F8F520800F74AF7 /* TableViewController.m in Sources */,
 				065E64F91F8C5F67009F9799 /* CzyAppDelegate.m in Sources */,
 				065E64DF1F8C5EAB009F9799 /* main.m in Sources */,
 				06CE6F071F8E197B003B13E4 /* ASValueTrackingSlider.m in Sources */,
@@ -287,6 +379,7 @@
 		};
 		065E64F21F8C5EAB009F9799 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5A71C1948FBB03BF63966C6C /* Pods-CzyPlayer.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = TGQ3T5S6T9;
@@ -301,6 +394,7 @@
 		};
 		065E64F31F8C5EAB009F9799 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 828AAADE43B868458C356B74 /* Pods-CzyPlayer.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = TGQ3T5S6T9;

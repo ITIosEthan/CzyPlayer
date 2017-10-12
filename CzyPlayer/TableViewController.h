@@ -1,6 +1,6 @@
-//  CzyRootViewController.m
+//  TableViewController.h
 //  CzyPlayer
-//  Created by macOfEthan on 17/10/10.
+//  Created by macOfEthan on 17/10/12.
 //  Copyright © 2017年 macOfEthan. All rights reserved.
 //  Github:https://github.com/ITIosEthan
 //  简书：http://www.jianshu.com/u/1d52648daace
@@ -13,33 +13,8 @@
  *  ▒ ░   ░▒▓▒ ▒ ▒ ░ ░▒ ▒  ░▒ ▒▒ ▓▒   ╚═════╝  ╚═════╝  ╚═════╝
  */
 
-#import "CzyRootViewController.h"
-#import "CzyPlayerView.h"
+#import <UIKit/UIKit.h>
 
-@interface CzyRootViewController ()
-
-@end
-
-@implementation CzyRootViewController
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-
-    self.navigationController.navigationBar.hidden = YES;
-    
-    CzyPlayerView *playView = [[CzyPlayerView alloc] init];
-    
-    playView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 200);
-    
-    playView.playUrl = @"http://flv3.bn.netease.com/videolib3/1710/11/YcDjZ7703/HD/YcDjZ7703-mobile.mp4";
-    
-    playView.cacheProgressColor = [UIColor redColor];
-    playView.loadedProgreeViewColor = [UIColor greenColor];
-    playView.loadedProgreeViewColors = @[[UIColor lightGrayColor],[UIColor blueColor], [UIColor greenColor]];
-    
-    [self.view addSubview:playView];
-}
-
-
+@interface TableViewController : UIViewController
 
 @end
