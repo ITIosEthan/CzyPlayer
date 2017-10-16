@@ -294,10 +294,8 @@
         /**播放进度大于缓冲进度时*/
         if (self.slider.value >= self.progressCacheView.progress-0.1) {
             
-            [self activityViewStartRunning];
-        }else{
-            
             [self activityViewStopRunning];
+
         }
     }];
 }
@@ -398,6 +396,11 @@
     }];
     
     [self setStatusBarHidden:YES];
+    
+    
+    if (self.screenDidRotate) {
+        self.screenDidRotate(UIDeviceOrientationLandscapeLeft);
+    }
 }
 
 #pragma mark - 向左选择全屏
@@ -421,6 +424,11 @@
     }];
     
     [self setStatusBarHidden:YES];
+    
+    
+    if (self.screenDidRotate) {
+        self.screenDidRotate(UIDeviceOrientationLandscapeRight);
+    }
 }
 
 #pragma mark - 取消全屏播放
@@ -446,6 +454,11 @@
     }];
     
     [self setStatusBarHidden:NO];
+    
+    
+    if (self.screenDidRotate) {
+        self.screenDidRotate(UIDeviceOrientationPortrait);
+    }
 }
 
 #pragma mark - 播放与暂停的相互切换
@@ -485,7 +498,18 @@
         self.keyWindow = [UIApplication sharedApplication].keyWindow;
         
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+        
+        /**screen rotation*/
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
+        
+        /**application notif*/
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+        
+        /**播放完成*/
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didPlayToEnd:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
         
         /**单击手势*/
         [self showOrHiddenSubViews];
@@ -495,8 +519,6 @@
         
         /**默认隐藏子视图*/
         [self hiddenSubViews];
-        
-        
     }
     return self;
 }
@@ -615,7 +637,6 @@
         
         [self.player play];
         self.playPauseBtn.selected = YES;
-        [self activityViewStopRunning];
         self.currentTimeLabel.text = [self getTimeWithSecond:CMTimeGetSeconds(currentTime)];
     }];
 }
@@ -631,8 +652,6 @@
         
         [self.player play];
         self.playPauseBtn.selected = YES;
-        
-        [self activityViewStopRunning];
     }];
 }
 
@@ -680,15 +699,39 @@
     }
 }
 
-#pragma mark - 切换新的播放地址
-- (void)replaceCurrentPlayItemWithUrl:(NSString *)newUrl
+#pragma mark - 播放完成
+- (void)didPlayToEnd:(NSNotification *)noti
 {
-    [self.player.currentItem removeObserver:self forKeyPath:@"status"];
-    [self.player.currentItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+    [self removeObserver];
     
     [self hiddenSubViews];
+    
+    self.playUrl = [self.playUrl isEqualToString:self.playUrls.firstObject] ? self.playUrls.lastObject : self.playUrls.firstObject;
+    
+#pragma mark - 切换新的播放地址
+    [self activityViewStartRunning];
 
-    AVPlayerItem *newPlayItem = [self getPlayItemWithUrl:newUrl];
+    AVPlayerItem *newPlayItem = [self getPlayItemWithUrl:self.playUrl];
+    
+    [self.player replaceCurrentItemWithPlayerItem:newPlayItem];
+    
+    [self observeLoadingProgressAndStatusWithPlayerItem:newPlayItem];
+    [self observePlayProgressWithPlayer:self.player];
+    
+    [self play];
+}
+
+#pragma mark - 手动切换播放地址
+- (void)playWithNewUrl:(NSString *)url
+{
+    [self removeObserver];
+    
+    [self hiddenSubViews];
+    
+#pragma mark - 切换新的播放地址
+    [self activityViewStartRunning];
+    
+    AVPlayerItem *newPlayItem = [self getPlayItemWithUrl:url];
     
     [self.player replaceCurrentItemWithPlayerItem:newPlayItem];
     
@@ -713,22 +756,50 @@
     [self.player pause];
 }
 
+#pragma mark - application notifiy
+- (void)willResignActive:(NSNotification *)noti
+{
+    [self pause];
+}
+
+- (void)didEnterBackground:(NSNotification *)noti
+{
+    NSLog(@"didEnterBackground");
+}
+
+- (void)willEnterForeground:(NSNotification *)noti
+{
+    NSLog(@"willEnterForeground");
+}
+
+- (void)didBecomeActive:(NSNotification *)noti
+{
+    [self play];
+}
+
 #pragma mark - <ASValueTrackingSliderDelegate, ASValueTrackingSliderDataSource>
 - (NSString *)slider:(ASValueTrackingSlider *)slider stringForValue:(float)value
 {
     return [self getTimeWithSecond:slider.value * self.totalDuration];
 }
 
+#pragma mark - 移除观察者
+- (void)removeObserver
+{
+    [self.player.currentItem removeObserver:self forKeyPath:@"status"];
+    [self.player.currentItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+}
+
 #pragma mark - dealloc
 - (void)dealloc
 {
-    [self.playerItem removeObserver:self forKeyPath:@"status"];
-    [self.playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+    [self removeObserver];
     
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
-    self.player = nil;
     self.playerItem = nil;
+    self.player = nil;
     self.playerLayer = nil;
     self.bottomPlayerView = nil;
     self.playPauseBtn = nil;

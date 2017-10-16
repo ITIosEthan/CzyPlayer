@@ -56,7 +56,21 @@
 
     self.playView.playUrl = self.urls.firstObject;
     
+    self.playView.playUrls = self.urls;
+    
     _tableView.tableHeaderView = self.playView;
+    
+    CZY_WEAK(_playView);
+    
+    _playView.screenDidRotate = ^(UIDeviceOrientation orientation){
+    
+        NSLog(@"orientation = %ld", orientation);
+        
+        if (orientation == UIDeviceOrientationPortrait) {
+            
+            _tableView.tableHeaderView = weak_playView;
+        }
+    };
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -84,12 +98,12 @@
     switch (indexPath.row) {
         case 0:
 
-            [self.playView replaceCurrentPlayItemWithUrl:self.urls.firstObject];
+            [self.playView playWithNewUrl:self.urls.firstObject];
             break;
             
         default:
 
-            [self.playView replaceCurrentPlayItemWithUrl:self.urls.lastObject];
+            [self.playView playWithNewUrl:self.urls.lastObject];
             break;
     }
 }
